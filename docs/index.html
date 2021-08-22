@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head prefix="og: http://ogp.me/ns#">
+    <meta charset="utf-8" />
+
+    <meta
+      name="viewport"
+      content="minimum-scale=1, initial-scale=1, width=device-width"
+    />
+
+    <meta name="description" content="A sketching canvas." />
+    <meta property="og:description" content="A sketching canvas." />
+
+    <meta
+      property="og:image"
+      content="https://kanvas.b-hood.site/favicon.png"
+    />
+
+    <meta property="og:title" content="kanvas" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://kanvas.b-hood.site/" />
+
+    <meta name="twitter:card" content="summary" />
+
+    <link rel="apple-touch-icon" href="favicon.png" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="manifest" href="manifest.json" />
+
+    <title>kanvas</title>
+  </head>
+
+  <body>
+    <a
+      href="https://scrapbox.io/hata6502/kanvas"
+      rel="noreferrer"
+      target="_blank"
+    >
+      <h1>kanvas</h1>
+    </a>
+
+    <input id="file-input" type="file" accept="video/*" />
+
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.1/dist/ffmpeg.min.js" integrity="sha256-HcVVikTHyKIlCyCHJ+am8AUU+oetJenX2o6yubSioak=" crossorigin="anonymous"></script>
+
+    <script type="module">
+    const fileInput = document.querySelector("#file-input");
+
+    fileInput.addEventListener("change", () => {
+      const file = fileInput.files[0];
+      const fileReader = new FileReader();
+
+          fileReader.addEventListener(
+            "load",
+            async() => {
+              const ffmpeg = FFmpeg.createFFmpeg({ log: true });
+
+              await ffmpeg.load();
+
+              ffmpeg.FS('writeFile', file.name, fileReader.result);
+              await ffmpeg.run('-i', file.name, 'output.mp4');
+
+              const output = ffmpeg.FS('readFile', 'output.mp4');
+            }
+          );
+
+          fileReader.readAsArrayBuffer(file);
+          });
+    </script>
+  </body>
+</html>
